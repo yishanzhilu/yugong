@@ -1,0 +1,29 @@
+version: '3'
+services:
+  tai:
+    image: ccr.ccs.tencentyun.com/yishanzhilu/tai:v0.0.3
+    # 环境变量
+    container_name: 'yishan-tai'
+  everest:
+    image: ccr.ccs.tencentyun.com/yishanzhilu/everest:0.1
+    # 环境变量
+    container_name: yishan-everest
+    volumes:
+      - './everest.yaml:/etc/everest/viper.yaml'
+    depends_on:
+      - redis
+  redis:
+    image: redis
+    container_name: yishan-redis
+    volumes:
+      - './redis-data:/data'
+  nginx:
+    image: nginx:latest
+    ports:
+      - '80:80'
+    volumes:
+      - '$PWD/nginx.conf:/etc/nginx/nginx.conf'
+    container_name: 'yishan-nginx'
+    depends_on:
+      - tai
+      - everest
